@@ -2,13 +2,6 @@ pipeline {
 
     agent any
 
-    environment {
-        SEMP_URL = credentials('SOLACE_SEMP_URL')
-        USERNAME = credentials('SOLACE_USERNAME')
-        PASSWORD = credentials('SOLACE_PASSWORD')
-        VPN      = credentials('SOLACE_MSG_VPN')
-    }
-
     stages {
 
         stage('Terraform Init') {
@@ -25,17 +18,28 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                bat """
-                terraform plan ^
-                -out=tfplan ^
-                -var="semp_url=%SEMP_URL%" ^
-                -var="username=%USERNAME%" ^
-                -var="password=%PASSWORD%" ^
-                -var="msg_vpn_name=%VPN%" ^
-                -var="queue_name=ORDER_QUEUEE"
-                """
+
+                withCredentials([
+                    string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
+                    string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
+                    string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
+                    string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
+                ]) {
+
+                    bat '''
+                    terraform plan ^
+                    -out=tfplan ^
+                    -var="semp_url=%SEMP_URL%" ^
+                    -var="username=%USERNAME%" ^
+                    -var="password=%PASSWORD%" ^
+                    -var="msg_vpn_name=%VPN%" ^
+                    -var="queue_name=ORDER_QUEUEE"
+                    '''
+
+                }
             }
         }
 
     }
+
 }
