@@ -5,9 +5,9 @@ pipeline {
     parameters {
 
         string(
-            name: 'QUEUE_NAME',
+            name: 'QUEUE_NAMES',
             defaultValue: 'ORDER_QUEUE',
-            description: 'Queue Name'
+            description: 'Comma separated queue names'
         )
 
         string(
@@ -60,7 +60,7 @@ pipeline {
                     -var="username=%USERNAME%" ^
                     -var="password=%PASSWORD%" ^
                     -var="msg_vpn_name=%MSG_VPN_NAME%" ^
-                    -var="queue_name=%QUEUE_NAME%" ^
+                    -var="queue_names=%QUEUE_NAMES%" ^
                     -var="ingress_enabled=%INGRESS_ENABLED%" ^
                     -var="egress_enabled=%EGRESS_ENABLED%" ^
                     """

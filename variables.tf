@@ -15,8 +15,8 @@ variable "password" {
 }
 
 variable "queue_names" {
-  description = "List of queues"
-  type        = list(string)
+  description = "Comma separated queue names"
+  type        = string
 }
 
 variable "msg_vpn_name" {
