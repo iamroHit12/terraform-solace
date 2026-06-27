@@ -16,5 +16,11 @@ pipeline {
             }
         }
 
+        stage('Terraform Validate') {
+            steps {
+                bat 'terraform validate'
+            }
+        }
+
     }
 }
