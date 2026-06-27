@@ -3,10 +3,29 @@ pipeline {
     agent any
 
     parameters {
+
         string(
             name: 'QUEUE_NAME',
             defaultValue: 'ORDER_QUEUE',
-            description: 'Enter the Solace Queue Name'
+            description: 'Queue Name'
+        )
+
+        string(
+            name: 'MSG_VPN_NAME',
+            defaultValue: 'service01',
+            description: 'Message VPN'
+        )
+
+        booleanParam(
+            name: 'INGRESS_ENABLED',
+            defaultValue: true,
+            description: 'Enable Ingress'
+        )
+
+        booleanParam(
+            name: 'EGRESS_ENABLED',
+            defaultValue: true,
+            description: 'Enable Egress'
         )
     }
 
@@ -40,8 +59,10 @@ pipeline {
                     -var="semp_url=%SEMP_URL%" ^
                     -var="username=%USERNAME%" ^
                     -var="password=%PASSWORD%" ^
-                    -var="msg_vpn_name=%VPN%" ^
+                    -var="msg_vpn_name=%MSG_VPN_NAME%"
                     -var="queue_name=%QUEUE_NAME%"
+                    -var="ingress_enabled=%INGRESS_ENABLED%"
+                    -var="egress_enabled=%EGRESS_ENABLED%"
                     """
                 }
             }

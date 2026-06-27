@@ -14,12 +14,20 @@ variable "password" {
   sensitive   = true
 }
 
-variable "queue_name" {
-  description = "Queue Name"
-  type        = string
+variable "queue_names" {
+  description = "List of queues"
+  type        = list(string)
 }
 
 variable "msg_vpn_name" {
   description = "Message VPN Name"
   type        = string
+}
+
+variable "ingress_enabled" {
+  type = bool
+}
+
+variable "egress_enabled" {
+  type = bool
 }
