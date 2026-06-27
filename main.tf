@@ -1,6 +1,6 @@
 resource "solacebroker_msg_vpn_queue" "order_queue" {
 
-  msg_vpn_name = "service01"
+  msg_vpn_name = var.msg_vpn_name
 
   queue_name = var.queue_name
 

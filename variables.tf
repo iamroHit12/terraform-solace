@@ -18,3 +18,8 @@ variable "queue_name" {
   description = "Queue Name"
   type        = string
 }
+
+variable "msg_vpn_name" {
+  description = "Message VPN Name"
+  type        = string
+}
