@@ -33,37 +33,42 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                bat 'terraform init'
+                dir('terraform') {
+                    bat 'terraform init'
+                }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                bat 'terraform validate'
+                dir('terraform') {
+                    bat 'terraform validate'
+                }
             }
         }
 
         stage('Terraform Plan') {
             steps {
+                dir('terraform') {
+                    withCredentials([
+                        string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
+                        string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
+                        string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
+                        string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
+                    ]) {
 
-                withCredentials([
-                    string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
-                    string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
-                    string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
-                    string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
-                ]) {
-
-                    bat """
-                    terraform plan ^
-                    -out=tfplan ^
-                    -var="semp_url=%SEMP_URL%" ^
-                    -var="username=%USERNAME%" ^
-                    -var="password=%PASSWORD%" ^
-                    -var="msg_vpn_name=%MSG_VPN_NAME%" ^
-                    -var="queue_names=%QUEUE_NAMES%" ^
-                    -var="ingress_enabled=%INGRESS_ENABLED%" ^
-                    -var="egress_enabled=%EGRESS_ENABLED%" ^
-                    """
+                        bat """
+                        terraform plan ^
+                        -out=tfplan ^
+                        -var="semp_url=%SEMP_URL%" ^
+                        -var="username=%USERNAME%" ^
+                        -var="password=%PASSWORD%" ^
+                        -var="msg_vpn_name=%MSG_VPN_NAME%" ^
+                        -var="queue_names=%QUEUE_NAMES%" ^
+                        -var="ingress_enabled=%INGRESS_ENABLED%" ^
+                        -var="egress_enabled=%EGRESS_ENABLED%" ^
+                        """
+                    }
                 }
             }
         }
@@ -76,17 +81,18 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
+                dir('terraform') {
+                    withCredentials([
+                        string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
+                        string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
+                        string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
+                        string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
+                    ]) {
 
-                withCredentials([
-                    string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
-                    string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
-                    string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
-                    string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
-                ]) {
-
-                    bat """
-                    terraform apply -auto-approve tfplan
-                    """
+                        bat """
+                        terraform apply -auto-approve tfplan
+                        """
+                    }
                 }
             }
         }
