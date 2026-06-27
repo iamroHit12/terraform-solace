@@ -32,7 +32,7 @@ pipeline {
                 -var="username=%USERNAME%" ^
                 -var="password=%PASSWORD%" ^
                 -var="msg_vpn_name=%VPN%" ^
-                -var="queue_name=ORDER_QUEUE"
+                -var="queue_name=ORDER_QUEUEE"
                 """
             }
         }
