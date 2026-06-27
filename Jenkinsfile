@@ -47,11 +47,11 @@ pipeline {
             }
         }
 
-        stage('Approval') {
-            steps {
-                input message: "Approve Terraform Apply?"
-            }
-        }
+        // stage('Approval') {
+        //     steps {
+        //         input message: "Approve Terraform Apply?"
+        //     }
+        // }
 
         stage('Terraform Apply') {
             steps {
