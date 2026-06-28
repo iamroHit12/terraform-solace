@@ -19,52 +19,20 @@ pipeline {
 
     stages {
 
-        stage('Terraform Login') {
-
+        stage('Terraform Init') {
             steps {
-
                 dir('terraform') {
 
                     withCredentials([
                         string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
                     ]) {
 
-                        bat """
-                        if not exist %%APPDATA%%\\terraform.d mkdir %%APPDATA%%\\terraform.d
+                        withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]) {
 
-                        (
-                        echo {
-                        echo   "credentials": {
-                        echo     "app.terraform.io": {
-                        echo       "token": "%%TF_TOKEN%%"
-                        echo     }
-                        echo   }
-                        echo }
-                        ) > %%APPDATA%%\\terraform.d\\credentials.tfrc.json
-                        """
+                            bat 'terraform init'
 
+                        }
                     }
-
-                }
-
-            }
-
-        }
-
-        stage('Verify Terraform Credentials') {
-            steps {
-                bat """
-                echo APPDATA=%APPDATA%
-                dir %APPDATA%\\terraform.d
-                type %APPDATA%\\terraform.d\\credentials.tfrc.json
-                """
-            }
-        }
-
-        stage('Terraform Init') {
-            steps {
-                dir('terraform') {
-                    bat 'terraform init'
                 }
             }
         }
@@ -89,22 +57,25 @@ pipeline {
             steps {
                 dir('terraform') {
                     withCredentials([
-                        string(credentialsId: 'SOLACE_DEV_SEMP_URL', variable: 'SEMP_URL'),
-                        string(credentialsId: 'SOLACE_DEV_USERNAME', variable: 'USERNAME'),
-                        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD')
+                        string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
+                        string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
+                        string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
+                        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
                     ]) {
 
-                        bat """
-                        terraform plan ^
-                        -out=tfplan ^
-                        -var-file="environments/dev.tfvars" ^
-                        -var="semp_url=%SEMP_URL%" ^
-                        -var="username=%USERNAME%" ^
-                        -var="password=%PASSWORD%" ^
-                        -var="queue_names=%QUEUE_NAMES%"
-                        """
+                        withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]) {
 
-                        archiveArtifacts artifacts: 'tfplan', fingerprint: true
+                            bat """
+                            terraform plan ^
+                            -out=tfplan ^
+                            -var-file="%TFVARS_FILE%" ^
+                            -var="semp_url=%SEMP_URL%" ^
+                            -var="username=%USERNAME%" ^
+                            -var="password=%PASSWORD%" ^
+                            -var="queue_names=%QUEUE_NAMES%"
+                            """
+
+                        }
                     }
                 }
             }
