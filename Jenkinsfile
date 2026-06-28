@@ -62,7 +62,7 @@ pipeline {
                         -var="queue_names=%QUEUE_NAMES%"
                         """
 
-                        archiveArtifacts artifacts: 'terraform/tfplan', fingerprint: true
+                        archiveArtifacts artifacts: 'tfplan', fingerprint: true
                     }
                 }
             }
