@@ -11,7 +11,36 @@ An enterprise-ready Infrastructure as Code (IaC) project that automates Solace P
 
 ## Architecture
 
-(Mermaid diagram will go here)
+mermaid
+flowchart TD
+
+    A[Developer] -->|Push Code| B[GitHub Repository]
+
+    B --> C[Jenkins Pipeline]
+
+    C --> D[Checkout Source]
+
+    D --> E[Terraform Init]
+
+    E --> F[Terraform Format Check]
+
+    F --> G[Terraform Validate]
+
+    G --> H[Terraform Plan]
+
+    H --> I[Archive tfplan]
+
+    I --> J[Manual Approval]
+
+    J --> K[Terraform Apply]
+
+    K --> L[Terraform Module]
+
+    L --> M[Solace Provider]
+
+    M --> N[Solace PubSub+ Cloud]
+
+    N --> O[Queue Created]
 
 ---
 
