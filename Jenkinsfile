@@ -36,6 +36,20 @@ pipeline {
             }
         }
 
+        stage('Prepare Credentials') {
+            steps {
+                script {
+                    env.SEMP_URL_CRED = "SOLACE_${params.ENVIRONMENT}_SEMP_URL"
+                    env.USERNAME_CRED = "SOLACE_${params.ENVIRONMENT}_USERNAME"
+                    env.PASSWORD_CRED = "SOLACE_${params.ENVIRONMENT}_PASSWORD"
+                }
+
+                echo "SEMP URL Credential : ${env.SEMP_URL_CRED}"
+                echo "Username Credential : ${env.USERNAME_CRED}"
+                echo "Password Credential : ${env.PASSWORD_CRED}"
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
