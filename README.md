@@ -1,12 +1,46 @@
 # Terraform Solace Queue Automation
 
+![Terraform](https://img.shields.io/badge/Terraform-1.15+-623CE4?logo=terraform)
+![Jenkins](https://img.shields.io/badge/Jenkins-CI-D24939?logo=jenkins)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Platform](https://img.shields.io/badge/Solace-PubSub+-00C895)
+
 An enterprise-ready Infrastructure as Code (IaC) project that automates Solace PubSub+ queue provisioning using Terraform and Jenkins. The project demonstrates CI/CD best practices, reusable Terraform modules, environment-specific deployments, and secure credential management.
 
 ---
 
 ## Architecture
 
-(Mermaid diagram will go here)
+mermaid
+flowchart TD
+
+    A[Developer] -->|Push Code| B[GitHub Repository]
+
+    B --> C[Jenkins Pipeline]
+
+    C --> D[Checkout Source]
+
+    D --> E[Terraform Init]
+
+    E --> F[Terraform Format Check]
+
+    F --> G[Terraform Validate]
+
+    G --> H[Terraform Plan]
+
+    H --> I[Archive tfplan]
+
+    I --> J[Manual Approval]
+
+    J --> K[Terraform Apply]
+
+    K --> L[Terraform Module]
+
+    L --> M[Solace Provider]
+
+    M --> N[Solace PubSub+ Cloud]
+
+    N --> O[Queue Created]
 
 ---
 
