@@ -1,6 +1,6 @@
 module "queues" {
 
-  for_each = toset(local.queue_list)
+  for_each        = toset(local.queue_list)
   source          = "./modules/queue"
   queue_name      = each.value
   msg_vpn_name    = var.msg_vpn_name
