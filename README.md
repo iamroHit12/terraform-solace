@@ -9,40 +9,63 @@ An enterprise-ready Infrastructure as Code (IaC) project that automates Solace P
 
 ---
 
-## Architecture
-
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
-flowchart TD
+flowchart TB
 
-    A[Developer] -->|Push Code| B[GitHub Repository]
+    DEV[👨‍💻 Developer]
 
-    B --> C[Jenkins Pipeline]
+    GIT[GitHub Repository]
 
-    C --> D[Checkout Source]
+    JENKINS[Jenkins CI/CD Pipeline]
 
-    D --> E[Terraform Init]
+    INIT[Terraform Init]
 
-    E --> F[Terraform Format Check]
+    FMT[Terraform Format Check]
 
-    F --> G[Terraform Validate]
+    VALIDATE[Terraform Validate]
 
-    G --> H[Terraform Plan]
+    PLAN[Terraform Plan]
 
-    H --> I[Archive tfplan]
+    APPROVAL[Manual Approval]
 
-    I --> J[Manual Approval]
+    APPLY[Terraform Apply]
 
-    J --> K[Terraform Apply]
+    MODULE[Terraform Queue Module]
 
-    K --> L[Terraform Module]
+    PROVIDER[Solace Terraform Provider]
 
-    L --> M[Solace Provider]
+    SOLACE[(Solace PubSub+ Cloud)]
 
-    M --> N[Solace PubSub+ Cloud]
+    QUEUE[(Queue Created)]
 
-    N --> O[Queue Created]
+    DEV -->|Push Code| GIT
+    GIT --> JENKINS
+
+    JENKINS --> INIT
+    INIT --> FMT
+    FMT --> VALIDATE
+    VALIDATE --> PLAN
+    PLAN --> APPROVAL
+    APPROVAL --> APPLY
+
+    APPLY --> MODULE
+    MODULE --> PROVIDER
+    PROVIDER --> SOLACE
+    SOLACE --> QUEUE
+
+    classDef github fill:#24292e,color:#ffffff
+    classDef jenkins fill:#D24939,color:#ffffff
+    classDef terraform fill:#623CE4,color:#ffffff
+    classDef solace fill:#00A3E0,color:#ffffff
+    classDef developer fill:#2ECC71,color:#ffffff
+
+    class DEV developer
+    class GIT github
+    class JENKINS jenkins
+    class INIT,FMT,VALIDATE,PLAN,APPROVAL,APPLY,MODULE terraform
+    class PROVIDER,SOLACE,QUEUE solace
 ```
 
 ---
