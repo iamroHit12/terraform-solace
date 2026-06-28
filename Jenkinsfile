@@ -93,12 +93,15 @@ pipeline {
                     withCredentials([
                         string(credentialsId: 'SOLACE_DEV_SEMP_URL', variable: 'SEMP_URL'),
                         string(credentialsId: 'SOLACE_DEV_USERNAME', variable: 'USERNAME'),
-                        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD')
+                        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD'),
+                        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
                     ]) {
-
-                        bat """
-                        terraform apply -auto-approve tfplan
-                        """
+                        
+                        withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]){
+                            bat """
+                            terraform apply -auto-approve tfplan
+                            """
+                        }
                     }
                 }
             }
