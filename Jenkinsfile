@@ -1,3 +1,15 @@
+def withTerraform(Closure body) {
+    dir('terraform') {
+        withCredentials([
+            string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
+        ]) {
+            withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]) {
+                body()
+            }
+        }
+    }
+}
+
 pipeline {
 
     agent any
@@ -21,17 +33,9 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('terraform') {
-
-                    withCredentials([
-                        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
-                    ]) {
-
-                        withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]) {
-
-                            bat 'terraform init'
-
-                        }
+                script {
+                    withTerraform {
+                        bat 'terraform init'
                     }
                 }
             }
