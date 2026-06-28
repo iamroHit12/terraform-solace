@@ -83,6 +83,7 @@ pipeline {
                         bat """
                         terraform plan ^
                         -out=tfplan ^
+                        -var-file="${env.TFVARS_FILE}" ^
                         -var="semp_url=%SEMP_URL%" ^
                         -var="username=%USERNAME%" ^
                         -var="password=%PASSWORD%" ^
