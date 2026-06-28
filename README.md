@@ -11,7 +11,9 @@ An enterprise-ready Infrastructure as Code (IaC) project that automates Solace P
 
 ## Architecture
 
-mermaid
+## Architecture
+
+```mermaid
 flowchart TD
 
     A[Developer] -->|Push Code| B[GitHub Repository]
@@ -41,6 +43,7 @@ flowchart TD
     M --> N[Solace PubSub+ Cloud]
 
     N --> O[Queue Created]
+```
 
 ---
 
