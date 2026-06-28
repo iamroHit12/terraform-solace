@@ -44,6 +44,16 @@ pipeline {
             }
         }
 
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    env.TFVARS_FILE = "environments/${params.ENVIRONMENT.toLowerCase()}.tfvars"
+                }
+
+                echo "Terraform Variable File : ${env.TFVARS_FILE}"
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
