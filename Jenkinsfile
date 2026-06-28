@@ -10,6 +10,17 @@ def withTerraform(Closure body) {
     }
 }
 
+def withSolaceDevCredentials(Closure body) {
+    withCredentials([
+        string(credentialsId: 'SOLACE_DEV_SEMP_URL', variable: 'SEMP_URL'),
+        string(credentialsId: 'SOLACE_DEV_USERNAME', variable: 'USERNAME'),
+        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD'),
+        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
+    ]) {
+        body()
+    }
+}
+
 pipeline {
 
     agent any
@@ -63,15 +74,9 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir('terraform') {
-                    withCredentials([
-                        string(credentialsId: 'SOLACE_DEV_SEMP_URL', variable: 'SEMP_URL'),
-                        string(credentialsId: 'SOLACE_DEV_USERNAME', variable: 'USERNAME'),
-                        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD'),
-                        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
-                    ]) {
-
-                        withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]) {
+                script {
+                    withTerraform {
+                        withSolaceDevCredentials {
 
                             bat """
                             terraform plan ^
@@ -82,7 +87,7 @@ pipeline {
                             -var="password=%PASSWORD%" ^
                             -var="queue_names=%QUEUE_NAMES%"
                             """
-
+                            archiveArtifacts artifacts: 'terraform/tfplan', fingerprint: true
                         }
                     }
                 }
@@ -97,18 +102,12 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('terraform') {
-                    withCredentials([
-                        string(credentialsId: 'SOLACE_DEV_SEMP_URL', variable: 'SEMP_URL'),
-                        string(credentialsId: 'SOLACE_DEV_USERNAME', variable: 'USERNAME'),
-                        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD'),
-                        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
-                    ]) {
-                        
-                        withEnv(["TF_TOKEN_app_terraform_io=${TF_TOKEN}"]){
-                            bat """
-                            terraform apply -auto-approve tfplan
-                            """
+                script {
+                    withTerraform {
+                        withSolaceDevCredentials {
+
+                            bat 'terraform apply -auto-approve tfplan'
+
                         }
                     }
                 }
