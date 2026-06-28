@@ -19,14 +19,6 @@ pipeline {
 
     stages {
 
-        stage('Terraform Init') {
-            steps {
-                dir('terraform') {
-                    bat 'terraform init'
-                }
-            }
-        }
-
         stage('Terraform Login') {
 
             steps {
@@ -57,6 +49,14 @@ pipeline {
 
             }
 
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('terraform') {
+                    bat 'terraform init'
+                }
+            }
         }
 
         stage('Terraform Format Check') {
