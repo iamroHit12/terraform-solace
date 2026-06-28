@@ -27,6 +27,38 @@ pipeline {
             }
         }
 
+        stage('Terraform Login') {
+
+            steps {
+
+                dir('terraform') {
+
+                    withCredentials([
+                        string(credentialsId: 'TERRAFORM_CLOUD_TOKEN', variable: 'TF_TOKEN')
+                    ]) {
+
+                        bat """
+                        if not exist %%APPDATA%%\\terraform.d mkdir %%APPDATA%%\\terraform.d
+
+                        (
+                        echo {
+                        echo   "credentials": {
+                        echo     "app.terraform.io": {
+                        echo       "token": "%%TF_TOKEN%%"
+                        echo     }
+                        echo   }
+                        echo }
+                        ) > %%APPDATA%%\\terraform.d\\credentials.tfrc.json
+                        """
+
+                    }
+
+                }
+
+            }
+
+        }
+
         stage('Terraform Format Check') {
             steps {
                 dir('terraform') {
