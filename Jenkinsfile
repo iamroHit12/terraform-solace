@@ -4,12 +4,6 @@ pipeline {
 
     parameters {
 
-        choice(
-            name: 'ENVIRONMENT',
-            choices: ['DEV', 'PQA', 'QA', 'PROD'],
-            description: 'Select deployment environment'
-        )
-
         string(
             name: 'QUEUE_NAMES',
             defaultValue: 'ORDER_QUEUE',
@@ -18,37 +12,6 @@ pipeline {
     }
 
     stages {
-
-        stage('Print Parameters') {
-            steps {
-                echo "Environment : ${params.ENVIRONMENT}"
-                echo "Queue Names : ${params.QUEUE_NAMES}"
-            }
-        }
-
-        stage('Prepare Environment') {
-            steps {
-                script {
-                    env.TFVARS_FILE = "environments/${params.ENVIRONMENT.toLowerCase()}.tfvars"
-                }
-
-                echo "Terraform Variable File : ${env.TFVARS_FILE}"
-            }
-        }
-
-        stage('Prepare Credentials') {
-            steps {
-                script {
-                    env.SEMP_URL_CRED = "SOLACE_${params.ENVIRONMENT}_SEMP_URL"
-                    env.USERNAME_CRED = "SOLACE_${params.ENVIRONMENT}_USERNAME"
-                    env.PASSWORD_CRED = "SOLACE_${params.ENVIRONMENT}_PASSWORD"
-                }
-
-                echo "SEMP URL Credential : ${env.SEMP_URL_CRED}"
-                echo "Username Credential : ${env.USERNAME_CRED}"
-                echo "Password Credential : ${env.PASSWORD_CRED}"
-            }
-        }
 
         stage('Terraform Init') {
             steps {
@@ -70,16 +33,16 @@ pipeline {
             steps {
                 dir('terraform') {
                     withCredentials([
-                        string(credentialsId: 'SOLACE_SEMP_URL', variable: 'SEMP_URL'),
-                        string(credentialsId: 'SOLACE_USERNAME', variable: 'USERNAME'),
-                        string(credentialsId: 'SOLACE_PASSWORD', variable: 'PASSWORD'),
-                        string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
+                        string(credentialsId: 'SOLACE_DEV_SEMP_URL', variable: 'SEMP_URL'),
+                        string(credentialsId: 'SOLACE_DEV_USERNAME', variable: 'USERNAME'),
+                        string(credentialsId: 'SOLACE_DEV_PASSWORD', variable: 'PASSWORD'),
+                        // string(credentialsId: 'SOLACE_MSG_VPN', variable: 'VPN')
                     ]) {
 
                         bat """
                         terraform plan ^
                         -out=tfplan ^
-                        -var-file="${env.TFVARS_FILE}" ^
+                        -var-file="environments/dev.tfvars"
                         -var="semp_url=%SEMP_URL%" ^
                         -var="username=%USERNAME%" ^
                         -var="password=%PASSWORD%" ^
