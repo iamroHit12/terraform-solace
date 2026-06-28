@@ -61,6 +61,8 @@ pipeline {
                         -var="password=%PASSWORD%" ^
                         -var="queue_names=%QUEUE_NAMES%"
                         """
+
+                        archiveArtifacts artifacts: 'terraform/tfplan', fingerprint: true
                     }
                 }
             }
