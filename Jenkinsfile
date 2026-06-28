@@ -4,6 +4,12 @@ pipeline {
 
     parameters {
 
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['DEV', 'PQA', 'QA', 'PROD'],
+            description: 'Select deployment environment'
+        )
+
         string(
             name: 'QUEUE_NAMES',
             defaultValue: 'ORDER_QUEUE',
@@ -30,6 +36,13 @@ pipeline {
     }
 
     stages {
+
+        stage('Print Parameters') {
+            steps {
+                echo "Environment : ${params.ENVIRONMENT}"
+                echo "Queue Names : ${params.QUEUE_NAMES}"
+            }
+        }
 
         stage('Terraform Init') {
             steps {
