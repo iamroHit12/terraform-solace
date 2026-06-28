@@ -43,16 +43,20 @@ pipeline {
 
         stage('Terraform Format Check') {
             steps {
-                dir('terraform') {
-                    bat 'terraform fmt -check -recursive'
+                script {
+                    withTerraform {
+                        bat 'terraform fmt -check -recursive'
+                    }
                 }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                dir('terraform') {
-                    bat 'terraform validate'
+                script {
+                    withTerraform {
+                        bat 'terraform validate'
+                    }
                 }
             }
         }
