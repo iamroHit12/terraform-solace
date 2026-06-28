@@ -15,24 +15,6 @@ pipeline {
             defaultValue: 'ORDER_QUEUE',
             description: 'Comma separated queue names'
         )
-
-        string(
-            name: 'MSG_VPN_NAME',
-            defaultValue: 'service01',
-            description: 'Message VPN'
-        )
-
-        booleanParam(
-            name: 'INGRESS_ENABLED',
-            defaultValue: true,
-            description: 'Enable Ingress'
-        )
-
-        booleanParam(
-            name: 'EGRESS_ENABLED',
-            defaultValue: true,
-            description: 'Enable Egress'
-        )
     }
 
     stages {
