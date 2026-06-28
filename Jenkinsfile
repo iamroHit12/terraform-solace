@@ -51,6 +51,16 @@ pipeline {
 
         }
 
+        stage('Verify Terraform Credentials') {
+            steps {
+                bat """
+                echo APPDATA=%APPDATA%
+                dir %APPDATA%\\terraform.d
+                type %APPDATA%\\terraform.d\\credentials.tfrc.json
+                """
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
